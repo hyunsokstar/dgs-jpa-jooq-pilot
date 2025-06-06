@@ -1,0 +1,23 @@
+
+type Query {
+    # 모든 사용자 조회 (기존)
+    allUsers: [User!]!
+
+    # Hello 쿼리 (기존)
+    hello: String!
+
+    # 키워드로 사용자 검색 (추가)
+    findUsersByKeyword(keyword: String!): [User!]!
+}
+
+type Mutation {
+    # 사용자 등록 (기존 방식 유지)
+    registerUser(email: String!, name: String!, password: String!): User!
+}
+
+# 사용자 타입 정의 (기존)
+type User {
+    id: ID!
+    email: String!
+    name: String!
+}
