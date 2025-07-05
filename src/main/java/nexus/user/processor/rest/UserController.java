@@ -1,6 +1,6 @@
 // 📄 nexus/user/presentation/rest/UserController.java
 
-package nexus.user.presentation.rest;
+package nexus.user.processor.rest;
 
 import lombok.RequiredArgsConstructor;
 import nexus.user.application.UserService;

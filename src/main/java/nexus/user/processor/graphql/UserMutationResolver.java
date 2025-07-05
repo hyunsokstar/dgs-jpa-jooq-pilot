@@ -1,4 +1,4 @@
-package nexus.user.presentation.graphql;
+package nexus.user.processor.graphql;
 
 import com.netflix.graphql.dgs.*;
 import lombok.RequiredArgsConstructor;

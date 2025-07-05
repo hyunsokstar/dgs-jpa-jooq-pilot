@@ -14,10 +14,10 @@ public class UserService {
 
     private final JpaUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider; // ✅ JWT 토큰 프로바이더 의존성 주입
+        private final JwtTokenProvider jwtTokenProvider; // ✅ JWT 토큰 프로바이더 의존성 주입
 
-    public LoginResponse login(String email, String password) {
-        User user = userRepository.findByEmail(email) // ✅ 이메일로 사용자 조회
+        public LoginResponse login(String email, String password) {
+            User user = userRepository.findByEmail(email) // ✅ 이메일로 사용자 조회
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
 
         if (!passwordEncoder.matches(password, user.getPassword())) { // ✅ 비밀번호 검증
