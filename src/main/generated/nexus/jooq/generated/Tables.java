@@ -4,6 +4,7 @@
 package nexus.jooq.generated;
 
 
+import nexus.jooq.generated.tables.AgentTaskStatus;
 import nexus.jooq.generated.tables.Users;
 
 
@@ -12,6 +13,11 @@ import nexus.jooq.generated.tables.Users;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
+
+    /**
+     * The table <code>public.agent_task_status</code>.
+     */
+    public static final AgentTaskStatus AGENT_TASK_STATUS = AgentTaskStatus.AGENT_TASK_STATUS;
 
     /**
      * The table <code>public.users</code>.

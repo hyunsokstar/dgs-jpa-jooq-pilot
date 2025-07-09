@@ -3,6 +3,13 @@ spring:
   application:
     name: pilot-for-jooq
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      password: nexus!234
+
   datasource:
     url: jdbc:postgresql://localhost:5432/pilotdb
     username: pilot

@@ -2,6 +2,7 @@ package nexus.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import nexus.user.domain.type.AgentStatus;
 
 @Entity
 @Getter @Setter
@@ -18,4 +19,10 @@ public class User {
     private String email;
     private String name;
     private String password;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "call_status")
+    private AgentStatus callStatus = AgentStatus.READY;
+
 }

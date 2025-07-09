@@ -9,6 +9,10 @@ type Query {
 
     # 키워드로 사용자 검색 (추가)
     findUsersByKeyword(keyword: String!): [User!]!
+
+    getAllUsers: [User!]!
+    getUserById(id: ID!): User
+
 }
 
 type Mutation {

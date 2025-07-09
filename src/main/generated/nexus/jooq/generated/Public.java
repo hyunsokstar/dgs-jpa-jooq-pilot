@@ -7,6 +7,7 @@ package nexus.jooq.generated;
 import java.util.Arrays;
 import java.util.List;
 
+import nexus.jooq.generated.tables.AgentTaskStatus;
 import nexus.jooq.generated.tables.Users;
 
 import org.jooq.Catalog;
@@ -26,6 +27,11 @@ public class Public extends SchemaImpl {
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.agent_task_status</code>.
+     */
+    public final AgentTaskStatus AGENT_TASK_STATUS = AgentTaskStatus.AGENT_TASK_STATUS;
 
     /**
      * The table <code>public.users</code>.
@@ -48,6 +54,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
+            AgentTaskStatus.AGENT_TASK_STATUS,
             Users.USERS
         );
     }

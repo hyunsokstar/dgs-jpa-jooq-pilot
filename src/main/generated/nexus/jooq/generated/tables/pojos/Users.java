@@ -19,6 +19,7 @@ public class Users implements Serializable {
     private String email;
     private String name;
     private String password;
+    private String callStatus;
 
     public Users() {}
 
@@ -27,18 +28,21 @@ public class Users implements Serializable {
         this.email = value.email;
         this.name = value.name;
         this.password = value.password;
+        this.callStatus = value.callStatus;
     }
 
     public Users(
         Long id,
         String email,
         String name,
-        String password
+        String password,
+        String callStatus
     ) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
+        this.callStatus = callStatus;
     }
 
     /**
@@ -97,6 +101,20 @@ public class Users implements Serializable {
         this.password = password;
     }
 
+    /**
+     * Getter for <code>public.users.call_status</code>.
+     */
+    public String getCallStatus() {
+        return this.callStatus;
+    }
+
+    /**
+     * Setter for <code>public.users.call_status</code>.
+     */
+    public void setCallStatus(String callStatus) {
+        this.callStatus = callStatus;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -130,6 +148,12 @@ public class Users implements Serializable {
         }
         else if (!this.password.equals(other.password))
             return false;
+        if (this.callStatus == null) {
+            if (other.callStatus != null)
+                return false;
+        }
+        else if (!this.callStatus.equals(other.callStatus))
+            return false;
         return true;
     }
 
@@ -141,6 +165,7 @@ public class Users implements Serializable {
         result = prime * result + ((this.email == null) ? 0 : this.email.hashCode());
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
         result = prime * result + ((this.password == null) ? 0 : this.password.hashCode());
+        result = prime * result + ((this.callStatus == null) ? 0 : this.callStatus.hashCode());
         return result;
     }
 
@@ -152,6 +177,7 @@ public class Users implements Serializable {
         sb.append(", ").append(email);
         sb.append(", ").append(name);
         sb.append(", ").append(password);
+        sb.append(", ").append(callStatus);
 
         sb.append(")");
         return sb.toString();
