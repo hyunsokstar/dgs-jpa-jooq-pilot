@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List; // ✅ java.util.List로 수정 (java.awt.List가 아님)
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -44,22 +44,32 @@ public class UserController {
     }
 
     /**
-     * ✅ 현재 사용자 프로필 조회
+     * 현재 사용자 프로필 조회
      */
     @GetMapping("/profile")
     public ResponseEntity<UserDto> getCurrentUserProfile(Authentication authentication) {
+        // ✅ null 체크 추가
+        if (authentication == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         String email = authentication.getName();
         UserDto userProfile = userQueryService.getUserByEmail(email);
         return ResponseEntity.ok(userProfile);
     }
 
     /**
-     * ✅ 프로필 업데이트
+     * 프로필 업데이트
      */
     @PutMapping("/profile")
     public ResponseEntity<UserDto> updateProfile(
             @RequestBody UpdateProfileRequest request,
             Authentication authentication) {
+
+        // ✅ null 체크 추가
+        if (authentication == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
         String email = authentication.getName();
         UserDto updatedUser = userService.updateProfile(email, request);
@@ -67,7 +77,7 @@ public class UserController {
     }
 
     /**
-     * ✅ 전체 사용자 목록 조회
+     * 전체 사용자 목록 조회
      */
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
@@ -76,7 +86,7 @@ public class UserController {
     }
 
     /**
-     * ✅ 특정 사용자 조회
+     * 특정 사용자 조회
      */
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
@@ -85,12 +95,29 @@ public class UserController {
     }
 
     /**
-     * 상담원 상태 변경
+     * ✅ 상담원 상태 변경 (ID 기반 - 개발용)
+     */
+    @PutMapping("/{userId}/status")
+    public ResponseEntity<UserDto> updateCallStatusById(
+            @PathVariable Long userId,
+            @RequestParam AgentStatus callStatus) {
+
+        UserDto updatedUser = userService.updateProfileById(userId, callStatus);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    /**
+     * 상담원 상태 변경 (인증 기반)
      */
     @PutMapping("/status")
     public ResponseEntity<UserDto> updateCallStatus(
             @RequestParam AgentStatus callStatus,
             Authentication authentication) {
+
+        // ✅ null 체크 추가
+        if (authentication == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
         String email = authentication.getName();
         UpdateProfileRequest request = new UpdateProfileRequest();
@@ -99,5 +126,15 @@ public class UserController {
         UserDto updatedUser = userService.updateProfile(email, request);
         return ResponseEntity.ok(updatedUser);
     }
+
+    /**
+     * ✅ 사용자 검색
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<UserDto>> searchUsers(@RequestParam String keyword) {
+        List<UserDto> users = userQueryService.findUsersByKeyword(keyword);
+        return ResponseEntity.ok(users);
+    }
+
 
 }
