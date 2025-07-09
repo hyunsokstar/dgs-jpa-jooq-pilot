@@ -4,17 +4,18 @@
 package nexus.jooq.generated.tables;
 
 
+import java.time.LocalDateTime;
 import java.util.function.Function;
 
 import nexus.jooq.generated.Public;
 import nexus.jooq.generated.tables.records.UsersRecord;
 
 import org.jooq.Field;
-import org.jooq.Function5;
+import org.jooq.Function7;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -70,6 +71,16 @@ public class Users extends TableImpl<UsersRecord> {
      * The column <code>public.users.call_status</code>.
      */
     public final TableField<UsersRecord, String> CALL_STATUS = createField(DSL.name("call_status"), SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>public.users.created_at</code>.
+     */
+    public final TableField<UsersRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.users.profile_image</code>.
+     */
+    public final TableField<UsersRecord, String> PROFILE_IMAGE = createField(DSL.name("profile_image"), SQLDataType.VARCHAR(255), this, "");
 
     private Users(Name alias, Table<UsersRecord> aliased) {
         this(alias, aliased, null);
@@ -150,18 +161,18 @@ public class Users extends TableImpl<UsersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, String, String, String, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row7<Long, String, String, String, String, LocalDateTime, String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function5<? super Long, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function7<? super Long, ? super String, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super String, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -169,7 +180,7 @@ public class Users extends TableImpl<UsersRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Long, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super Long, ? super String, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super String, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

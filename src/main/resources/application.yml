@@ -3,12 +3,20 @@ spring:
   application:
     name: pilot-for-jooq
 
+  # ✅ Spring Session 설정 추가
+  session:
+    store-type: redis                    # Redis를 세션 저장소로 사용
+    timeout: 30m                         # 세션 타임아웃 (30분)
+    redis:
+      namespace: "spring:session:pilot"  # Redis 네임스페이스 (다른 앱과 구분)
+      repository-type: indexed           # indexed 타입 사용 (세션 쿼리 기능)
+
   data:
     redis:
       host: localhost
       port: 6379
       database: 0
-      password: nexus!234
+  #      password: nexus!234
 
   datasource:
     url: jdbc:postgresql://localhost:5432/pilotdb
@@ -21,7 +29,7 @@ spring:
       ddl-auto: update   # ✅ 애플리케이션 실행 시 JPA Entity 구조를 기준으로 DB 테이블을 자동 생성 또는 수정
         # - create: 실행 시 기존 테이블 삭제 후 재생성 (초기 개발 단계)
         # - update: 변경된 Entity 구조만 반영 (일반적인 dev 설정)
-        # - validate: DB 구조와 Entity 매핑 검증만 하고 변경은 안 함 (prod 권장)
+      # - validate: DB 구조와 Entity 매핑 검증만 하고 변경은 안 함 (prod 권장)
       # - none: 아무 작업도 안 함
     show-sql: true       # ✅ 콘솔에 실행되는 SQL 출력
     properties:

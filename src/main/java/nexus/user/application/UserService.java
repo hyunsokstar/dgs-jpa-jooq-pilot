@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import nexus.common.security.JwtTokenProvider; // ✅ JWT 생성 유틸
 import nexus.user.domain.User;
 import nexus.user.dto.LoginResponse;
+import nexus.user.dto.UpdateProfileRequest;
+import nexus.user.dto.UserDto;
 import nexus.user.infrastructure.JpaUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,42 @@ public class UserService {
                 .name(name)
                 .password(encodedPassword)
                 .build()); // ✅ 사용자 저장
+    }
+
+    // nexus/user/application/UserService.java의 updateProfile 메서드
+    public UserDto updateProfile(String email, UpdateProfileRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 필드별 업데이트 및 Redis pub
+        if (request.getName() != null && !request.getName().equals(user.getName())) {
+            user.updateName(request.getName());
+            // Redis pub (선택사항)
+            // redisPublisher.publishUserProfileUpdate(user.getId(), "name", request.getName());
+        }
+
+        if (request.getEmail() != null && !request.getEmail().equals(user.getEmail())) {
+            // 이메일 중복 체크
+            if (userRepository.existsByEmail(request.getEmail())) {
+                throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+            }
+            user.updateEmail(request.getEmail());
+            // redisPublisher.publishUserProfileUpdate(user.getId(), "email", request.getEmail());
+        }
+
+        if (request.getProfileImage() != null) {
+            user.updateProfileImage(request.getProfileImage());
+            // redisPublisher.publishUserProfileUpdate(user.getId(), "profileImage", request.getProfileImage());
+        }
+
+        // ✅ 상담원 상태 업데이트 추가
+        if (request.getCallStatus() != null && !request.getCallStatus().equals(user.getCallStatus())) {
+            user.updateCallStatus(request.getCallStatus());
+            // redisPublisher.publishUserProfileUpdate(user.getId(), "callStatus", request.getCallStatus());
+        }
+
+        User savedUser = userRepository.save(user);
+        return UserDto.from(savedUser);
     }
 
 }

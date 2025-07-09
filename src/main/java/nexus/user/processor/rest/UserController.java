@@ -1,19 +1,17 @@
-// 📄 nexus/user/presentation/rest/UserController.java
-
+// nexus/user/processor/rest/UserController.java
 package nexus.user.processor.rest;
 
 import lombok.RequiredArgsConstructor;
 import nexus.user.application.UserQueryService;
 import nexus.user.application.UserService;
 import nexus.user.domain.User;
-import nexus.user.dto.LoginRequest;     // ✅ 로그인 요청 DTO import
-import nexus.user.dto.LoginResponse;    // ✅ 로그인 응답 DTO import
-import nexus.user.dto.RegisterRequest;
-import nexus.user.dto.UserDto;
+import nexus.user.domain.type.AgentStatus;
+import nexus.user.dto.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
+import java.util.List; // ✅ java.util.List로 수정 (java.awt.List가 아님)
 
 @RestController
 @RequestMapping("/api/users")
@@ -28,9 +26,8 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(
-            @RequestBody LoginRequest request // ✅ @RequestBody로 JSON 요청 바인딩 받음
+            @RequestBody LoginRequest request
     ) {
-        // ✅ 요청 객체에서 이메일/비밀번호 추출하여 서비스에 전달
         LoginResponse loginResponse = userService.login(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(loginResponse);
     }
@@ -44,6 +41,63 @@ public class UserController {
     ) {
         User registeredUser = userService.register(request.getEmail(), request.getName(), request.getPassword());
         return ResponseEntity.ok(registeredUser);
+    }
+
+    /**
+     * ✅ 현재 사용자 프로필 조회
+     */
+    @GetMapping("/profile")
+    public ResponseEntity<UserDto> getCurrentUserProfile(Authentication authentication) {
+        String email = authentication.getName();
+        UserDto userProfile = userQueryService.getUserByEmail(email);
+        return ResponseEntity.ok(userProfile);
+    }
+
+    /**
+     * ✅ 프로필 업데이트
+     */
+    @PutMapping("/profile")
+    public ResponseEntity<UserDto> updateProfile(
+            @RequestBody UpdateProfileRequest request,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+        UserDto updatedUser = userService.updateProfile(email, request);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    /**
+     * ✅ 전체 사용자 목록 조회
+     */
+    @GetMapping
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<UserDto> users = userQueryService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    /**
+     * ✅ 특정 사용자 조회
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+        UserDto user = userQueryService.getUserById(id);
+        return ResponseEntity.ok(user);
+    }
+
+    /**
+     * 상담원 상태 변경
+     */
+    @PutMapping("/status")
+    public ResponseEntity<UserDto> updateCallStatus(
+            @RequestParam AgentStatus callStatus,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+        UpdateProfileRequest request = new UpdateProfileRequest();
+        request.setCallStatus(callStatus);
+
+        UserDto updatedUser = userService.updateProfile(email, request);
+        return ResponseEntity.ok(updatedUser);
     }
 
 }

@@ -1,0 +1,20 @@
+// src/main/java/nexus/user/application/UserProfileService.java (또는 기존 서비스)
+@Service
+@RequiredArgsConstructor
+public class UserProfileService {
+
+    private final UserRepository userRepository;
+    private final RedisPublisher redisPublisher; // ✅ 추가
+
+    public void updateUserProfile(Long userId, String field, Object newValue) {
+        // ✅ 1. DB 업데이트
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // 프로필 업데이트 로직...
+        userRepository.save(user);
+
+        // ✅ 2. Redis pub (한 줄 추가!)
+        redisPublisher.publishUserProfileUpdate(userId, field, newValue);
+    }
+}

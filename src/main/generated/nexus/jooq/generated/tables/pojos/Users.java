@@ -5,6 +5,7 @@ package nexus.jooq.generated.tables.pojos;
 
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 
 /**
@@ -20,6 +21,8 @@ public class Users implements Serializable {
     private String name;
     private String password;
     private String callStatus;
+    private LocalDateTime createdAt;
+    private String profileImage;
 
     public Users() {}
 
@@ -29,6 +32,8 @@ public class Users implements Serializable {
         this.name = value.name;
         this.password = value.password;
         this.callStatus = value.callStatus;
+        this.createdAt = value.createdAt;
+        this.profileImage = value.profileImage;
     }
 
     public Users(
@@ -36,13 +41,17 @@ public class Users implements Serializable {
         String email,
         String name,
         String password,
-        String callStatus
+        String callStatus,
+        LocalDateTime createdAt,
+        String profileImage
     ) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
         this.callStatus = callStatus;
+        this.createdAt = createdAt;
+        this.profileImage = profileImage;
     }
 
     /**
@@ -115,6 +124,34 @@ public class Users implements Serializable {
         this.callStatus = callStatus;
     }
 
+    /**
+     * Getter for <code>public.users.created_at</code>.
+     */
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
+    }
+
+    /**
+     * Setter for <code>public.users.created_at</code>.
+     */
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    /**
+     * Getter for <code>public.users.profile_image</code>.
+     */
+    public String getProfileImage() {
+        return this.profileImage;
+    }
+
+    /**
+     * Setter for <code>public.users.profile_image</code>.
+     */
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -154,6 +191,18 @@ public class Users implements Serializable {
         }
         else if (!this.callStatus.equals(other.callStatus))
             return false;
+        if (this.createdAt == null) {
+            if (other.createdAt != null)
+                return false;
+        }
+        else if (!this.createdAt.equals(other.createdAt))
+            return false;
+        if (this.profileImage == null) {
+            if (other.profileImage != null)
+                return false;
+        }
+        else if (!this.profileImage.equals(other.profileImage))
+            return false;
         return true;
     }
 
@@ -166,6 +215,8 @@ public class Users implements Serializable {
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
         result = prime * result + ((this.password == null) ? 0 : this.password.hashCode());
         result = prime * result + ((this.callStatus == null) ? 0 : this.callStatus.hashCode());
+        result = prime * result + ((this.createdAt == null) ? 0 : this.createdAt.hashCode());
+        result = prime * result + ((this.profileImage == null) ? 0 : this.profileImage.hashCode());
         return result;
     }
 
@@ -178,6 +229,8 @@ public class Users implements Serializable {
         sb.append(", ").append(name);
         sb.append(", ").append(password);
         sb.append(", ").append(callStatus);
+        sb.append(", ").append(createdAt);
+        sb.append(", ").append(profileImage);
 
         sb.append(")");
         return sb.toString();
