@@ -2,11 +2,13 @@
 package nexus.user.processor.rest;
 
 import lombok.RequiredArgsConstructor;
+import nexus.common.security.JwtTokenProvider;
 import nexus.user.application.UserQueryService;
 import nexus.user.application.UserService;
 import nexus.user.domain.User;
 import nexus.user.domain.type.AgentStatus;
 import nexus.user.dto.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserQueryService userQueryService;
+    private final JwtTokenProvider jwtTokenProvider; // ✅ 추가
 
     /**
      * 로그인 API (JWT 발급 포함)
@@ -58,22 +61,102 @@ public class UserController {
         return ResponseEntity.ok(userProfile);
     }
 
+//    /**
+//     * 프로필 업데이트
+//     */
+//    @PutMapping("/profile")
+//    public ResponseEntity<UserDto> updateProfile(
+//            @RequestBody UpdateProfileRequest request,
+//            Authentication authentication) {
+//
+//        // ✅ null 체크 추가
+//        if (authentication == null) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        String email = authentication.getName();
+//        UserDto updatedUser = userService.updateProfile(email, request);
+//        return ResponseEntity.ok(updatedUser);
+//    }
+//
+//    /**
+//     * 상담원 상태 변경 (인증 기반)
+//     */
+//    @PutMapping("/status")
+//    public ResponseEntity<UserDto> updateCallStatus(
+//            @RequestParam AgentStatus callStatus,
+//            Authentication authentication) {
+//
+//        // ✅ null 체크 추가
+//        if (authentication == null) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        String email = authentication.getName();
+//        UpdateProfileRequest request = new UpdateProfileRequest();
+//        request.setCallStatus(callStatus);
+//
+//        UserDto updatedUser = userService.updateProfile(email, request);
+//        return ResponseEntity.ok(updatedUser);
+//    }
+
     /**
      * 프로필 업데이트
      */
     @PutMapping("/profile")
     public ResponseEntity<UserDto> updateProfile(
             @RequestBody UpdateProfileRequest request,
-            Authentication authentication) {
+            @RequestHeader("Authorization") String authHeader) {
 
-        // ✅ null 체크 추가
-        if (authentication == null) {
-            return ResponseEntity.badRequest().build();
+        try {
+            // Bearer 토큰에서 실제 토큰 추출
+            String token = jwtTokenProvider.extractTokenFromBearer(authHeader);
+
+            // 토큰 유효성 검증
+            if (token == null || !jwtTokenProvider.validateToken(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            // JWT에서 이메일 추출
+            String email = jwtTokenProvider.getEmailFromToken(token);
+
+            UserDto updatedUser = userService.updateProfile(email, request);
+            return ResponseEntity.ok(updatedUser);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
 
-        String email = authentication.getName();
-        UserDto updatedUser = userService.updateProfile(email, request);
-        return ResponseEntity.ok(updatedUser);
+    /**
+     * 상담원 상태 변경 (인증 기반)
+     */
+    @PutMapping("/status")
+    public ResponseEntity<UserDto> updateCallStatus(
+            @RequestParam AgentStatus callStatus,
+            @RequestHeader("Authorization") String authHeader) {
+
+        try {
+            // Bearer 토큰에서 실제 토큰 추출
+            String token = jwtTokenProvider.extractTokenFromBearer(authHeader);
+
+            // 토큰 유효성 검증
+            if (token == null || !jwtTokenProvider.validateToken(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            // JWT에서 이메일 추출
+            String email = jwtTokenProvider.getEmailFromToken(token);
+
+            UpdateProfileRequest request = new UpdateProfileRequest();
+            request.setCallStatus(callStatus);
+
+            UserDto updatedUser = userService.updateProfile(email, request);
+            return ResponseEntity.ok(updatedUser);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     /**
@@ -103,27 +186,6 @@ public class UserController {
             @RequestParam AgentStatus callStatus) {
 
         UserDto updatedUser = userService.updateProfileById(userId, callStatus);
-        return ResponseEntity.ok(updatedUser);
-    }
-
-    /**
-     * 상담원 상태 변경 (인증 기반)
-     */
-    @PutMapping("/status")
-    public ResponseEntity<UserDto> updateCallStatus(
-            @RequestParam AgentStatus callStatus,
-            Authentication authentication) {
-
-        // ✅ null 체크 추가
-        if (authentication == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        String email = authentication.getName();
-        UpdateProfileRequest request = new UpdateProfileRequest();
-        request.setCallStatus(callStatus);
-
-        UserDto updatedUser = userService.updateProfile(email, request);
         return ResponseEntity.ok(updatedUser);
     }
 

@@ -9,9 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
 import static nexus.jooq.generated.tables.Users.USERS;
-import static org.jooq.impl.DSL.count; // ✅ DSL.count import 추가
+
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class UserQueryService {
     public List<UserDto> getAllUsers() {
         return dsl
                 .select(USER_FIELDS)
-                .from(USERS)
+                .from(String.valueOf(USERS))
                 .orderBy(USERS.CREATED_AT.desc())
                 .fetchInto(UserDto.class);
     }

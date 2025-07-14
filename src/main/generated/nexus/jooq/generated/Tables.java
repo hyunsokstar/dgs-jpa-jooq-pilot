@@ -4,6 +4,7 @@
 package nexus.jooq.generated;
 
 
+import nexus.jooq.generated.tables.AgentCallTimeRecord;
 import nexus.jooq.generated.tables.AgentTaskStatus;
 import nexus.jooq.generated.tables.Users;
 
@@ -13,6 +14,11 @@ import nexus.jooq.generated.tables.Users;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
+
+    /**
+     * The table <code>public.agent_call_time_record</code>.
+     */
+    public static final AgentCallTimeRecord AGENT_CALL_TIME_RECORD = AgentCallTimeRecord.AGENT_CALL_TIME_RECORD;
 
     /**
      * The table <code>public.agent_task_status</code>.

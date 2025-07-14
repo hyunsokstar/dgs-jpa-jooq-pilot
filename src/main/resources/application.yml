@@ -15,7 +15,7 @@ spring:
     redis:
       host: localhost
       port: 6379
-      database: 0
+      database: 4
   #      password: nexus!234
 
   datasource:

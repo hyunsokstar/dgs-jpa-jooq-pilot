@@ -8,9 +8,11 @@ import nexus.user.dto.LoginResponse;
 import nexus.user.dto.UpdateProfileRequest;
 import nexus.user.dto.UserDto;
 import nexus.user.infrastructure.JpaUserRepository;
+import nexus.user.infrastructure.redis.RedisPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +22,10 @@ public class UserService {
     private final JpaUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+
     // private final RedisPublisher redisPublisher; // ✅ 2단계에서 추가할 예정
+    private final RedisPublisher redisPublisher; // 추가
+
 
     public LoginResponse login(String email, String password) {
         User user = userRepository.findByEmail(email)
@@ -31,7 +36,7 @@ public class UserService {
         }
 
         String token = jwtTokenProvider.createToken(email);
-        return new LoginResponse(token, user.getEmail(), user.getName());
+        return new LoginResponse(token,user.getId(), user.getEmail(), user.getName());
     }
 
     public User register(String email, String name, String password) {
@@ -95,8 +100,8 @@ public class UserService {
         user.updateCallStatus(callStatus);
         User savedUser = userRepository.save(user);
 
-        // ✅ 2단계: Redis pub 추가 예정
-        // redisPublisher.publishUserProfileUpdate(userId, "callStatus", callStatus);
+        // ✅ Redis pub 추가
+        redisPublisher.publishUserProfileUpdate(userId, "callStatus", callStatus);
 
         return UserDto.from(savedUser);
     }

@@ -6,6 +6,8 @@ import nexus.user.domain.type.AgentStatus;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,7 +30,6 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    // ✅ 프로필 이미지 추가
     private String profileImage;
 
     @Builder.Default
@@ -36,12 +37,16 @@ public class User {
     @Column(name = "call_status")
     private AgentStatus callStatus = AgentStatus.READY;
 
-    // ✅ 생성일시 추가
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // ✅ 업데이트 메서드들 (Setter 대신 도메인 로직)
+    // 연관관계 - 시간 기록들
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AgentCallTimeRecord> callTimeRecords = new ArrayList<>();
+
+    // 업데이트 메서드들
     public void updateName(String name) {
         if (name != null && !name.trim().isEmpty()) {
             this.name = name;
@@ -68,5 +73,16 @@ public class User {
         if (callStatus != null) {
             this.callStatus = callStatus;
         }
+    }
+
+    // 연관관계 편의 메서드
+    public void addCallTimeRecord(AgentCallTimeRecord record) {
+        callTimeRecords.add(record);
+        record.setUser(this);
+    }
+
+    public void removeCallTimeRecord(AgentCallTimeRecord record) {
+        callTimeRecords.remove(record);
+        record.setUser(null);
     }
 }
